@@ -6,23 +6,31 @@
         <tr>
           <th class="table-item__table-head-name">Name</th>
           <th class="table-item__table-head--isbn">ISBN</th>
+          <th class="table-item__table-head--actions">action</th>
         </tr>
       </thead>
       <tbody>
-        <tr
+        <BookListRow
           v-for="book in books"
           :key="book.isbn"
+          :title="book.title"
+          :isbn="book.isbn"
+          :isBookmarked="book?.isBookmarked"
+          @bookmark-clicked="handleBookmarkClick"
           class="table-item__table-row"
-        >
-          <td>{{ book.title }}</td>
-          <td>{{ book.isbn }}</td>
-        </tr>
+        />
       </tbody>
     </table>
   </section>
 </template>
+
 <script>
+import BookListRow from "@/components/BookListRow.vue";
+
 export default {
+  components: {
+    BookListRow,
+  },
   data() {
     return {
       books: [
@@ -61,6 +69,16 @@ export default {
       ],
     };
   },
+  methods: {
+    handleBookmarkClick(isbn) {
+      console.log(isbn);
+      const currentBookIndex = this.books.findIndex(
+        (book) => book.isbn === isbn
+      );
+      const currentBook = this.books[currentBookIndex];
+      currentBook.isBookmarked = !currentBook.isBookmarked ? true : false;
+    },
+  },
 };
 </script>
 
@@ -89,16 +107,12 @@ export default {
   border-radius: 5px;
 }
 
-.table-item__table-row:hover button {
-  opacity: 1;
-}
 .table-item__table thead tr {
   background-color: var(--primary);
   color: #ffffff;
   text-align: left;
 }
-.table-item__table th,
-.table-item__table td {
+.table-item__table th {
   padding: 12px 15px;
 }
 .table-item__table tbody tr {
